@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
+import android.net.wifi.WifiNetworkSuggestion
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
@@ -16,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // firebaseから値を取得
+
+        // tood
 
 
         // wifiチェック
@@ -49,8 +53,24 @@ class MainActivity : AppCompatActivity() {
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         println("wifi ${wifiManager.isWifiEnabled}")
 
+        val suggestion1 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            WifiNetworkSuggestion.Builder()
+                .setSsid("test111111")
+                //.setIsAppInteractionRequired() // Optional (Needs location permission)
+                .build()
+
+        } else {
+            TODO("VERSION.SDK_INT < Q")
+        }
+
+        val suggestionList = listOf(suggestion1)
+        wifiManager.addNetworkSuggestions(suggestionList)
+
+
         val config = WifiConfiguration()
         val status = wifiManager.addNetwork(config)
+
+
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
             // do error handling here
             println(status)
